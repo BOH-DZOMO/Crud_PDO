@@ -4,7 +4,8 @@
 require_once("header.php");
 require_once "database.php";
 
-function validate($data){
+function validate($data)
+{
     $data = trim($data);
     $data = htmlspecialchars($data);
     return $data;
@@ -13,24 +14,29 @@ function validate($data){
 $read_sql = "SELECT departmentId, departmentName FROM department WHERE departmentS = 'active' ";
 $read_result = $handler->prepare($read_sql);
 $read_result->execute();
-
+$error = "";
 if (isset($_POST["submit"])) {
-    $SpecName = validate($_POST["SpecName"]);
-    $depId =  validate($_POST["depId"]);
-    $description = validate($_POST["description"]);
-    $insert_sql = "INSERT INTO specialty(specialtyName,departmentId,description) VALUES (?,?,?)";
-    $insert_result = $handler->prepare($insert_sql);
-    $insert_result->execute(array($SpecName, $depId, $description));
-    $affectedRows = $insert_result->rowCount();
-    if ($affectedRows > 0) {
-        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    if (!(empty($_POST["SpecName"]) or empty($_POST["depId"]) or empty($_POST["description"]))) {
+        $SpecName = validate($_POST["SpecName"]);
+        $depId =  validate($_POST["depId"]);
+        $description = validate($_POST["description"]);
+        $insert_sql = "INSERT INTO specialty(specialtyName,departmentId,description) VALUES (?,?,?)";
+        $insert_result = $handler->prepare($insert_sql);
+        $insert_result->execute(array($SpecName, $depId, $description));
+        $affectedRows = $insert_result->rowCount();
+        if ($affectedRows > 0) {
+            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
   Data was successfully added(Operation successfull)
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>';
+        } else {
+            echo '<script>alert("Operation Unsuccesssfull");</script>';
+        }
     } else {
-        echo '<script>alert("Operation Unsuccesssfull");</script>';
+        $error = "One or more Inputs are not filled";
     }
 }
+
 
 
 
@@ -57,17 +63,16 @@ if (isset($_POST["submit"])) {
                         <select
                             class="form-select"
                             name="depId"
-                            id="depId"
-                            >
-                            <option selected>Select one</option>
+                            id="depId">
+                            <option value="" selected>Select one</option>
                             <?php
                             while ($result = $read_result->fetch(PDO::FETCH_ASSOC)) {
                             ?>
-                            <option value="<?php echo $result["departmentId"];?>"><?php echo $result["departmentName"];?></option>
+                                <option value="<?php echo $result["departmentId"]; ?>"><?php echo $result["departmentName"]; ?></option>
                             <?php
                             }
                             ?>
-                            
+
                         </select>
                     </div>
 
@@ -80,6 +85,7 @@ if (isset($_POST["submit"])) {
                     </div>
                 </form>
             </div>
+            <div><?php echo $error ?></div>
         </div>
 </body>
 

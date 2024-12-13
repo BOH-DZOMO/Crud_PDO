@@ -9,22 +9,27 @@ function validate($data){
     $data = htmlspecialchars($data);
     return $data;
 }
-
+$error ="";
 
 if (isset($_POST["submit"])) {
-    $name = validate($_POST["name"]);
-    $description = validate($_POST["description"]);
-    $insert_sql = "INSERT INTO department( departmentName, description) VALUES (?,?)";
-    $insert_result = $handler->prepare($insert_sql);
-    $insert_result->execute(array($name, $description));
-    $affectedRows = $insert_result->rowCount();
-    if ($affectedRows > 0) {
-        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-  Data was successfully added(Operation successfull)
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>';
-    } else {
-        echo '<script>alert("Operation Unsuccesssfull");</script>';
+    if (!(empty($_POST["name"]) or empty($_POST["description"]))) {
+        $name = validate($_POST["name"]);
+        $description = validate($_POST["description"]);
+        $insert_sql = "INSERT INTO department( departmentName, description) VALUES (?,?)";
+        $insert_result = $handler->prepare($insert_sql);
+        $insert_result->execute(array($name, $description));
+        $affectedRows = $insert_result->rowCount();
+        if ($affectedRows > 0) {
+            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+      Data was successfully added(Operation successfull)
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+        } else {
+            echo '<script>alert("Operation Unsuccesssfull");</script>';
+        }
+    }
+    else {
+        $error="one or two inputs are not filled";
     }
 }
 
@@ -56,6 +61,7 @@ if (isset($_POST["submit"])) {
                     </div>
                 </form>
             </div>
+            <div><?php echo $error;?></div>
         </div>
 </body>
 

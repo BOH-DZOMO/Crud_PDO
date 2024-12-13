@@ -23,7 +23,7 @@ require_once "database.php";
                     <th scope="col">#</th>
                     <th scope="col">Department</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Option</th>
+                    <th scope="col" colspan="2">Option</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,7 +46,9 @@ require_once "database.php";
                         <td><?php echo $result["description"]; ?></td>
                         <td>
                             <a role="button" href="update2.php?id=<?php echo $result["departmentId"]?>" class="btn btn-outline-info">Edit</a>
-                            <a role="button" href="delete2.php?id=<?php echo $result["departmentId"]?>" class="btn btn-danger" onclick="validateDelete()">Delete</a> 
+                        </td>
+                        <td>
+                        <a role="button" href="delete2.php?id=<?php echo $result["departmentId"]?>" class="btn btn-danger" onclick="validateDelete()">Delete</a> 
                         </td>
                     </tr>
                 <?php

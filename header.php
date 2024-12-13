@@ -9,3 +9,7 @@
     <script src="./jquery-ui-1.14.1.custom/jquery-ui.js"></script>
     <script src="./jquery-ui-1.14.1.custom/external/jquery/jquery.js"></script>
 </head>
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+?>
