@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
+session_start();
 require_once("header.php");
 require_once "database.php";
-$id = $_POST["id"];
+$id ="";
+if (isset($_POST["id"])) {
+    $_SESSION["id"] = $_POST["id"];
+    $id = $_SESSION["id"];
+}
+else {
+    $id = $_SESSION["id"];
+}
+
     $read_sql = "SELECT departmentName,specialty.departmentId, specialtyName, specialty.description  FROM specialty
                             INNER JOIN department ON department.departmentId = specialty.departmentId
                             WHERE departmentS = 'active' and specialtyS = 'active' and specialtyId=?";
@@ -16,8 +25,6 @@ $read_result2 = $handler->prepare($read_sql2);
 $read_result2->execute();
 
 if (isset($_POST["submit"])) {
-    $a = print_r($_POST);
-    echo "<script>alert('{$a}')</script>";
     $specName = $_POST["specName"];
     $depId = $_POST["depId"];
     $description = $_POST["description"];
@@ -25,11 +32,13 @@ if (isset($_POST["submit"])) {
     $update_sql = "UPDATE specialty SET specialtyName =?, departmentId = ?, description = ? WHERE specialtyId = ?";
     $update_result = $handler->prepare($update_sql);
     $update_result->execute(array($specName, $depId, $description, $id));
+    session_unset();
+    session_destroy();
     $affectedRows = $update_result->rowCount();
     if ($affectedRows > 0) {
-        echo '<script>alert("Update successful"); window.location.href = "index2.php";</script>';
+        echo '<script>alert("Update successful"); window.location.href = "display1.php";</script>';
     } else {
-        echo '<script>alert("No rows affected"); window.location.href = "index2.php";</script>';
+        echo '<script>alert("No rows affected"); window.location.href = "display1.php";</script>';
     }
 }
 
